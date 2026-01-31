@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 // const {ErrorHandler} = require('../middleware/error')
 exports.register = async (req, res, next) => {
     try {
+        console.log('Incoming register:', req.body)
         const { name, email, password, phone } = req.body;
         if (!name || !email || !password || !phone) {
             return res.status(400).json({ message: 'All fields are required' });
@@ -26,6 +27,7 @@ exports.register = async (req, res, next) => {
 }
 exports.login = async (req, res, next) => {
     try {
+        console.log('Incoming login:', req.body)
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
