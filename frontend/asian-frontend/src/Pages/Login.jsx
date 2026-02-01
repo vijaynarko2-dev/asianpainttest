@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User, Phone, CheckCircle } from 'lucide-react';
 
-export default function AuthPage() {
+export default function Login() {
+  const auth = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [activeTab, setActiveTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -45,15 +50,17 @@ export default function AuthPage() {
       return;
     }
 
+    const from = location.state?.from?.pathname || '/home'
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccess('Login successful!');
-      // Redirect to dashboard would happen here
+      // Call backend
+      await auth.login({ username: loginData.email, password: loginData.password })
+      setSuccess('Login successful!')
+      navigate(from, { replace: true })
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError(err.message || 'Invalid credentials. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   };
 
@@ -82,14 +89,14 @@ export default function AuthPage() {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccess('Registration successful! Please check your email.');
-      setTimeout(() => setActiveTab('login'), 2000);
+      // Call backend register
+      await auth.register({ fullName: registerData.fullName, email: registerData.email, phone: registerData.phone, password: registerData.password })
+      setSuccess('Registration successful! Please sign in.')
+      setTimeout(() => setActiveTab('login'), 1200)
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   };
 
