@@ -1,12 +1,15 @@
 const express = require("express");
 const dotenv = require("dotenv");
+
 const path = require("path");
-const cors = require("cors");
-const router = require("./routes/router");
-const cookieParser = require('cookie-parser');
 dotenv.config({
     path: path.join(__dirname, "config", "config.env")
 });
+const cors = require("cors");
+const router = require("./routes/router");
+const cookieParser = require('cookie-parser');
+const paymentrouter = require("./routes/paymentrouter");
+
 // dotenv.config({ path: "./config/config.env" });
 const connectdb = require("./db/conn")
 const app = express();
@@ -34,6 +37,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/health', (req, res) => res.json({ ok: true }))
 
 app.use("/api/auth/v1", router);
+app.use("/api/payment/v1", paymentrouter);
+
 connectdb()
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
