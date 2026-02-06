@@ -15,18 +15,18 @@ function App() {
 
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        } />
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         } />
-        <Route path="/admin" element={
-          <ProtectedRoute adminOnly={false}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
+        <Route path="*" element={<Login />} />
       </Routes>
     </>
   )

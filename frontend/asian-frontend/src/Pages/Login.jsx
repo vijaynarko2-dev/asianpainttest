@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User, Phone, CheckCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function AuthPage() {
-  const { login, register } = useAuth();
-  const navigate = useNavigate();
+export default function Login() {
+  const auth = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [activeTab, setActiveTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -49,18 +51,17 @@ export default function AuthPage() {
       return;
     }
 
+    const from = location.state?.from?.pathname || '/home'
+
     try {
-      const res = await login(loginData);
-      if (res.success) {
-        setSuccess('Login successful!');
-        setTimeout(() => navigate('/'), 1000);
-      } else {
-        setError(res.message);
-      }
+      // Call backend
+      await auth.login({ username: loginData.email, password: loginData.password })
+      setSuccess('Login successful!')
+      navigate(from, { replace: true })
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError(err.message || 'Invalid credentials. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   };
 
@@ -89,23 +90,14 @@ export default function AuthPage() {
     }
 
     try {
-      const res = await register({
-        name: registerData.fullName,
-        email: registerData.email,
-        phone: registerData.phone,
-        password: registerData.password
-      });
-
-      if (res.success) {
-        setSuccess('Registration successful!');
-        setTimeout(() => navigate('/'), 1000);
-      } else {
-        setError(res.message);
-      }
+      // Call backend register
+      await auth.register({ fullName: registerData.fullName, email: registerData.email, phone: registerData.phone, password: registerData.password })
+      setSuccess('Registration successful! Please sign in.')
+      setTimeout(() => setActiveTab('login'), 1200)
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   };
 
