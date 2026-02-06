@@ -53,7 +53,6 @@ const RechargeModal = ({ isOpen, onClose, initialAmount }) => {
             await axios.post("http://localhost:3000/api/payment/v1/submit", {
                 amount,
                 utr,
-                userId: user?._id || user?.id
             }, { withCredentials: true });
 
             alert("Payment Submitted! Verification Pending.");
@@ -127,14 +126,19 @@ const RechargeModal = ({ isOpen, onClose, initialAmount }) => {
                             <div className="bg-gray-100 p-4 rounded-xl border-2 border-dashed border-gray-300 w-full flex flex-col items-center">
                                 <p className="text-sm font-semibold text-gray-500 mb-2">Scan this QR Code to Pay</p>
 
-                                {qrData?.imageUrl ? (
-                                    // IMPORTANT: In production, URL should be full path. 
-                                    // If local uploads, backend should serve static 'uploads' folder.
-                                    // We'll handle this assumption by trying to render it.
+                                {qrData?.upiId ? (
+                                    <div className="w-48 h-48 bg-white p-2 rounded-lg shadow-sm">
+                                        <img
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=${qrData.upiId}&pn=AsianPaints&am=${amount}&cu=INR`)}`}
+                                            alt="Dynamic UPI QR"
+                                            className="w-full h-full object-contain"
+                                        />
+                                    </div>
+                                ) : qrData?.imageUrl ? (
                                     <div className="w-48 h-48 bg-white p-2 rounded-lg shadow-sm">
                                         <img
                                             src={`http://localhost:3000/${qrData.imageUrl.replace(/\\/g, '/')}`}
-                                            alt="QR Code"
+                                            alt="Static QR"
                                             className="w-full h-full object-contain"
                                             onError={(e) => e.target.src = "https://via.placeholder.com/200?text=QR+Not+Found"}
                                         />

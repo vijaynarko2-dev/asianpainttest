@@ -22,7 +22,7 @@ const { isauthenticated, authorizeRoles } = require('../middleware/auth');
 
 // Public Routes
 router.get('/qr', getQr);
-router.post('/submit', submitPayment);
+router.post('/submit', isauthenticated, submitPayment);
 
 // Admin Routes (Security removed as per request)
 router.post('/admin/upload-qr', upload.single('qrImage'), uploadQr);
