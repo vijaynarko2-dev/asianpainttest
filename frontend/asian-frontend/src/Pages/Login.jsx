@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User, Phone, CheckCircle } from 'lucide-react';
 
+
 export default function Login() {
   const auth = useAuth()
   const navigate = useNavigate()
@@ -11,12 +12,12 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: ''
   });
-  
+
   const [registerData, setRegisterData] = useState({
     fullName: '',
     email: '',
@@ -24,7 +25,7 @@ export default function Login() {
     password: '',
     confirmPassword: ''
   });
-  
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -130,11 +131,10 @@ export default function Login() {
                 setError('');
                 setSuccess('');
               }}
-              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${
-                activeTab === 'login'
-                  ? 'bg-white text-indigo-600 shadow-md'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${activeTab === 'login'
+                ? 'bg-white text-indigo-600 shadow-md'
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
             >
               Login
             </button>
@@ -144,11 +144,10 @@ export default function Login() {
                 setError('');
                 setSuccess('');
               }}
-              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${
-                activeTab === 'register'
-                  ? 'bg-white text-indigo-600 shadow-md'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${activeTab === 'register'
+                ? 'bg-white text-indigo-600 shadow-md'
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
             >
               Register
             </button>

@@ -16,28 +16,18 @@ const app = express();
 
 const PORT = process.env.PORT;
 app.use(cors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://localhost:5175',
-      'http://localhost:5176',
-      'http://localhost:5177',
-      'http://localhost:5178',
-      'http://localhost:5179',
-      'http://localhost:5180',
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: 'http://localhost:5173',
+
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
 
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// health check
-app.get('/health', (req, res) => res.json({ ok: true }))
-
+app.use(cookieParser());
 app.use("/api/auth/v1", router);
 app.use("/api/payment/v1", paymentrouter);
+app.use("/uploads", express.static("uploads"));
 
 connectdb()
 app.listen(PORT, () => {

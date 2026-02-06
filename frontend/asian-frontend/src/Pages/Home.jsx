@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Wallet, TrendingUp, Shield, Users, Gift, Send, ArrowRight, CheckCircle } from 'lucide-react';
-import PaymentModal from '../components/Paymentmodel';
+import ConfirmationModal from '../components/ConfirmationModal';
+import RechargeModal from '../components/RechargeModal';
 import AnnouncementPopup from '../components/AnnouncementPopup';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AsianPaintsLanding() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('normal');
 
-  const [open, setOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const [showAnnouncement, setShowAnnouncement] = useState(false);
 
   useEffect(() => {
@@ -57,15 +61,15 @@ export default function AsianPaintsLanding() {
             <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">ap</span>
           </div>
           <div>
-            <p className="text-sm font-semibold opacity-90">Ayan</p>
-            <p className="text-lg font-bold">9111665149</p>
+            <p className="text-sm font-semibold opacity-90">{user?.name || 'User'}</p>
+            <p className="text-lg font-bold">{user?.phone || '874744747'}</p>
           </div>
         </div>
 
         <div className="flex justify-between items-center mb-8 px-2">
           <div>
-            <p className="text-sm font-medium opacity-80 mb-1">Your Balnace</p>
-            <p className="text-3xl font-bold">₹12</p>
+            <p className="text-sm font-medium opacity-80 mb-1">Your Balance</p>
+            <p className="text-3xl font-bold">₹{user?.balance || 0}</p>
           </div>
           <div className="text-right flex flex-col items-end">
             <div className="flex items-center space-x-2 mb-1">
@@ -175,7 +179,7 @@ export default function AsianPaintsLanding() {
                 <button
                   onClick={() => {
                     setSelectedPlan(plan);
-                    setOpen(true);
+                    setIsConfirmationOpen(true);
                   }}
                   className="w-full bg-[#8b31de] text-white text-sm font-bold py-2.5 rounded-lg mt-3 shadow-md active:scale-95 transition-transform"
                 >
@@ -187,10 +191,20 @@ export default function AsianPaintsLanding() {
         ))}
       </div>
 
-      <PaymentModal
-        open={open}
+      <ConfirmationModal
+        open={isConfirmationOpen}
         plan={selectedPlan}
-        onClose={() => setOpen(false)}
+        onClose={() => setIsConfirmationOpen(false)}
+        onConfirm={() => {
+          setIsConfirmationOpen(false);
+          setIsRechargeOpen(true);
+        }}
+      />
+
+      <RechargeModal
+        isOpen={isRechargeOpen}
+        initialAmount={selectedPlan?.eachPrice}
+        onClose={() => setIsRechargeOpen(false)}
       />
 
       {showAnnouncement && (

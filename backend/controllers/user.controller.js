@@ -13,10 +13,20 @@ exports.register = async (req, res, next) => {
             return res.status(400).json({ message: 'User already exists' });
         }
         user = await User.create({ name, email, password, phone });
-        res.status(201).json({
+
+        const token = user.generateToken();
+        const options = {
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            sameSite: 'none',
+            secure: true,
+        };
+
+        res.status(201).cookie('token', token, options).json({
             success: true,
             message: "User registered successfully",
-            user
+            user,
+            token
         })
 
     } catch (error) {
@@ -41,7 +51,14 @@ exports.login = async (req, res, next) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
         const token = user.generateToken();
-        res.status(200).cookie('token', token).json({
+        const options = {
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h
+            httpOnly: true,
+            sameSite: 'none',
+            secure: true,
+        };
+
+        res.status(200).cookie('token', token, options).json({
             success: true,
             message: "User logged in successfully",
             user,
