@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
         console.error('Login error', res.status, data)
         throw new Error((data && data.message) || `Login failed (${res.status})`)
       }
-      const userObj = { username: data.user.email, name: data.user.name, token: data.token }
+      const userObj = { username: data.user.email, name: data.user.name, role: data.user.role, token: data.token }
       setUser(userObj)
       console.log('Login success', data)
       return data
