@@ -11,43 +11,30 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Admin: Upload QR Code
+// Admin: Upload QR Code & Update UPI ID
 exports.uploadQr = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ success: false, message: "No file uploaded" });
+        const { upiId } = req.body;
+        const qrUrl = req.file ? req.file.path : null;
+
+        if (!qrUrl && !upiId) {
+            return res.status(400).json({ success: false, message: "Nothing to update" });
         }
-
-        // Upload to Cloudinary (or save local path if preferred)
-        // For simplicity, we'll try to use Cloudinary if envs exist, else fallback to temp logic (but multer saves locally)
-        // Here assuming we just return the local path or dummy URL if no cloudinary
-
-        // MOCK: In a real app, upload to Cloudinary here. 
-        // For this demo, we'll assume the client handles the file to base64 or we store the local path.
-        // But since we are backend, let's just save the file data if we can, 
-        // OR better: Just accept a URL string if admin uploads to some service, OR implementation for file upload.
-
-        // Actually, let's use a simpler approach: 
-        // The admin frontend will just send a String URL (maybe user uploads to a free img host manually?)
-        // OR we implement local file serving. 
-        // Let's implement local file serving for simplicity if Cloudinary is hard to setup without keys.
-
-        // But wait, user asked "scan qr and pay". 
-        // Let's stick to: Admin sends a URL (maybe generic) or we assume local static file.
-
-        // Let's assume req.file.path is valid if we use multer diskStorage.
-        const qrUrl = req.file.path; // This will be a local path
 
         // Update or Create the single Admin QR record
         let adminQr = await AdminQr.findOne();
         if (adminQr) {
-            adminQr.imageUrl = qrUrl;
+            if (qrUrl) adminQr.imageUrl = qrUrl;
+            if (upiId !== undefined) adminQr.upiId = upiId;
             await adminQr.save();
         } else {
-            adminQr = await AdminQr.create({ imageUrl: qrUrl });
+            adminQr = await AdminQr.create({
+                imageUrl: qrUrl || "uploads/default.png",
+                upiId: upiId || ""
+            });
         }
 
-        res.status(200).json({ success: true, message: "QR Code updated", qr: adminQr });
+        res.status(200).json({ success: true, message: "Payment details updated", qr: adminQr });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -78,7 +65,7 @@ exports.submitPayment = async (req, res) => {
         }
 
         const request = await PaymentRequest.create({
-            userId, // In real app: req.user._id
+            userId: req.user._id,
             amount,
             utr,
             status: "pending"

@@ -3,12 +3,25 @@ import axios from 'axios';
 
 const AdminDashboard = () => {
     const [qrFile, setQrFile] = useState(null);
+    const [upiId, setUpiId] = useState("");
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchRequests();
+        fetchAdminDetails();
     }, []);
+
+    const fetchAdminDetails = async () => {
+        try {
+            const { data } = await axios.get('http://localhost:3000/api/payment/v1/qr', { withCredentials: true });
+            if (data.success && data.qr) {
+                setUpiId(data.qr.upiId || "");
+            }
+        } catch (error) {
+            console.error("Failed to fetch admin details", error);
+        }
+    }
 
     const fetchRequests = async () => {
         try {
@@ -23,19 +36,19 @@ const AdminDashboard = () => {
 
     const handleUploadQr = async (e) => {
         e.preventDefault();
-        if (!qrFile) return alert("Select a file first");
 
         const formData = new FormData();
-        formData.append('qrImage', qrFile);
+        if (qrFile) formData.append('qrImage', qrFile);
+        formData.append('upiId', upiId);
 
         try {
             await axios.post('http://localhost:3000/api/payment/v1/admin/upload-qr', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });
-            alert("QR Code Uploaded Successfully");
+            alert("Payment Details Updated Successfully");
         } catch (error) {
-            alert("Upload Failed");
+            alert("Update Failed");
             console.error(error);
         }
     };
@@ -56,17 +69,34 @@ const AdminDashboard = () => {
 
             {/* QR Upload Section */}
             <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                <h2 className="text-xl font-bold mb-4">Manage QR Code</h2>
-                <form onSubmit={handleUploadQr} className="flex gap-4 items-center">
-                    <input
-                        type="file"
-                        onChange={(e) => setQrFile(e.target.files[0])}
-                        accept="image/*"
-                        className="border p-2 rounded"
-                    />
-                    <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded font-bold hover:bg-purple-700">
-                        Upload New QR
-                    </button>
+                <h2 className="text-xl font-bold mb-4">Manage Payment Details</h2>
+                <form onSubmit={handleUploadQr} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-600">Admin UPI ID (for dynamic QR)</label>
+                        <input
+                            type="text"
+                            value={upiId}
+                            onChange={(e) => setUpiId(e.target.value)}
+                            placeholder="e.g. shirish@okaxis"
+                            className="w-full border p-2 rounded outline-purple-600"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-600">QR Code Image (Static Fallback)</label>
+                        <div className="flex gap-4 items-center">
+                            <input
+                                type="file"
+                                onChange={(e) => setQrFile(e.target.files[0])}
+                                accept="image/*"
+                                className="border p-2 rounded flex-1"
+                            />
+                        </div>
+                    </div>
+                    <div className="md:col-span-2">
+                        <button type="submit" className="w-full bg-purple-600 text-white px-4 py-2 rounded font-bold hover:bg-purple-700 transition-colors">
+                            Update Payment Details
+                        </button>
+                    </div>
                 </form>
             </div>
 
