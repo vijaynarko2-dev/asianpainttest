@@ -1,17 +1,21 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, Phone, CheckCircle } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AuthPage() {
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: ''
   });
-  
+
   const [registerData, setRegisterData] = useState({
     fullName: '',
     email: '',
@@ -19,7 +23,7 @@ export default function AuthPage() {
     password: '',
     confirmPassword: ''
   });
-  
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -46,10 +50,13 @@ export default function AuthPage() {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccess('Login successful!');
-      // Redirect to dashboard would happen here
+      const res = await login(loginData);
+      if (res.success) {
+        setSuccess('Login successful!');
+        setTimeout(() => navigate('/'), 1000);
+      } else {
+        setError(res.message);
+      }
     } catch (err) {
       setError('Invalid credentials. Please try again.');
     } finally {
@@ -82,10 +89,19 @@ export default function AuthPage() {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccess('Registration successful! Please check your email.');
-      setTimeout(() => setActiveTab('login'), 2000);
+      const res = await register({
+        name: registerData.fullName,
+        email: registerData.email,
+        phone: registerData.phone,
+        password: registerData.password
+      });
+
+      if (res.success) {
+        setSuccess('Registration successful!');
+        setTimeout(() => navigate('/'), 1000);
+      } else {
+        setError(res.message);
+      }
     } catch (err) {
       setError('Registration failed. Please try again.');
     } finally {
@@ -123,11 +139,10 @@ export default function AuthPage() {
                 setError('');
                 setSuccess('');
               }}
-              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${
-                activeTab === 'login'
-                  ? 'bg-white text-indigo-600 shadow-md'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${activeTab === 'login'
+                ? 'bg-white text-indigo-600 shadow-md'
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
             >
               Login
             </button>
@@ -137,11 +152,10 @@ export default function AuthPage() {
                 setError('');
                 setSuccess('');
               }}
-              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${
-                activeTab === 'register'
-                  ? 'bg-white text-indigo-600 shadow-md'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+              className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${activeTab === 'register'
+                ? 'bg-white text-indigo-600 shadow-md'
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
             >
               Register
             </button>

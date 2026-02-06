@@ -18,14 +18,16 @@ const PORT = process.env.PORT;
 app.use(cors({
     origin: 'http://localhost:5173',
 
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
 
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use("/api/auth/v1", router);
 app.use("/api/payment/v1", paymentrouter);
+app.use("/uploads", express.static("uploads"));
 
 connectdb()
 app.listen(PORT, () => {
