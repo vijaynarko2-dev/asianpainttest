@@ -19,7 +19,6 @@ const RechargeModal = ({ isOpen, onClose, initialAmount, planDetails }) => {
     useEffect(() => {
         if (planDetails) {
             setAmount(planDetails.investmentAmount);
-            setStep(2);
         } else if (initialAmount) {
             setAmount(initialAmount);
         }
@@ -27,10 +26,10 @@ const RechargeModal = ({ isOpen, onClose, initialAmount, planDetails }) => {
 
     useEffect(() => {
         if (!isOpen) {
-            setStep(planDetails ? 2 : 1);
+            setStep(1);
             setUtr("");
         }
-    }, [isOpen, planDetails]);
+    }, [isOpen]);
 
     useEffect(() => {
         if (step === 2 && !qrData && isOpen) {
