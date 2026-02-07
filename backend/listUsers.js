@@ -10,7 +10,7 @@ const listUsers = async () => {
         await mongoose.connect(process.env.MONGO_URL);
         console.log('Connected to MongoDB');
 
-        const users = await User.find({}, 'name email role');
+        const users = await User.find({}, 'name email role balance totalInvested totalEarnings');
         console.log('Users in database:');
         console.log(JSON.stringify(users, null, 2));
 

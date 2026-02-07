@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Wallet, TrendingUp, Shield, Users, Gift, Send, ArrowRight, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import ConfirmationModal from '../components/ConfirmationModal';
 import RechargeModal from '../components/RechargeModal';
 import AnnouncementPopup from '../components/AnnouncementPopup';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function AsianPaintsLanding() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('normal');
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -18,6 +20,41 @@ export default function AsianPaintsLanding() {
   }, []);
 
   const [selectedPlan, setSelectedPlan] = useState(null);
+
+  // Handle purchase confirmation
+  const handleConfirmPurchase = async () => {
+    try {
+      // Check if user has sufficient balance
+      if (user.balance < selectedPlan.eachPrice) {
+        // Insufficient balance - open recharge modal
+        setIsConfirmationOpen(false);
+        setIsRechargeOpen(true);
+        return;
+      }
+
+      // User has sufficient balance - create order
+      const response = await axios.post('http://localhost:3000/api/orders/create', {
+        planName: selectedPlan.name,
+        planImage: selectedPlan.image,
+        duration: selectedPlan.duration,
+        investmentAmount: selectedPlan.eachPrice,
+        dailyEarnings: selectedPlan.dailyEarnings,
+        totalGain: selectedPlan.totalGain
+      }, {
+        withCredentials: true
+      });
+
+      if (response.data.success) {
+        alert(`Order created successfully! Your new balance is ₹${response.data.newBalance}`);
+        setIsConfirmationOpen(false);
+        // Optionally refresh user data here
+        window.location.reload(); // Simple refresh to update balance
+      }
+    } catch (error) {
+      console.error('Order creation error:', error);
+      alert(error.response?.data?.message || 'Failed to create order');
+    }
+  };
 
   // Placeholder data - replace with actual API calls in production
   const normalPlans = [
@@ -53,60 +90,91 @@ export default function AsianPaintsLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-[#a855f7] pb-20 font-sans">
-      {/* Header */}
-      <header className="pt-6 pb-2 px-4 text-white">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-800 to-black rounded-2xl flex items-center justify-center shadow-lg border-2 border-purple-400/30">
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">ap</span>
-          </div>
-          <div>
-            <p className="text-sm font-semibold opacity-90">{user?.name || 'User'}</p>
-            <p className="text-lg font-bold">{user?.phone || '874744747'}</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50 pb-24 font-sans">
+      {/* Premium Header Area */}
+      <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 pt-8 pb-32 px-4 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-black/10 rounded-full blur-3xl"></div>
 
-        <div className="flex justify-between items-center mb-8 px-2">
-          <div>
-            <p className="text-sm font-medium opacity-80 mb-1">Your Balance</p>
-            <p className="text-3xl font-bold">₹{user?.balance || 0}</p>
-          </div>
-          <div className="text-right flex flex-col items-end">
-            <div className="flex items-center space-x-2 mb-1">
-              <p className="text-sm font-medium opacity-80">Total Income</p>
-              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                <Users className="w-3 h-3 text-purple-600" />
-              </div>
+        <header className="flex items-center justify-between mb-8 relative z-10 px-2">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-inner">
+              <span className="text-xl font-extrabold text-white tracking-tighter">ap</span>
             </div>
-            <p className="text-xl font-bold">₹0.00</p>
+            <div>
+              <p className="text-white/70 text-xs font-bold uppercase tracking-wider leading-tight">{user?.name || 'Investor'}</p>
+              <h2 className="text-white font-black text-lg leading-tight tracking-tight">{user?.phone || 'Account Active'}</h2>
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white active:scale-95 transition-transform border border-white/20 hover:bg-red-500/20"
+            title="Logout"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        </header>
+
+        {/* Balance Card RE-DESIGN */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-[2.5rem] p-8 text-white relative z-10 overflow-hidden border border-white/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)]">
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <p className="text-white/60 text-xs font-black uppercase tracking-[0.2em] mb-2">Portfolio Balance</p>
+              <h1 className="text-5xl font-black tracking-tighter">₹{(user?.balance || 0).toLocaleString()}</h1>
+            </div>
+            <div className="w-14 h-10 bg-white/20 rounded-2xl flex items-center justify-center border border-white/30 backdrop-blur-md">
+              <Wallet className="w-7 h-7 text-white/80" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6 mt-6 pt-6 border-t border-white/10">
+            <div>
+              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1.5">Total Earnings</p>
+              <p className="text-2xl font-black tracking-tight">₹0.00</p>
+            </div>
+            <div className="text-right">
+              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1.5">Expected ROI</p>
+              <p className="text-2xl font-black text-emerald-300 tracking-tight">+₹0.00</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Actions */}
-        <div className="grid grid-cols-4 gap-4 px-2">
+      {/* Quick Actions GRID Restoration */}
+      <div className="px-6 -mt-10 mb-12 relative z-20">
+        <div className="bg-white rounded-[2.5rem] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex justify-between items-center border border-slate-50">
           {[
-            { icon: Wallet, label: 'Recharge', link: null },
-            { icon: TrendingUp, label: 'Withdraw', link: null },
-            { icon: Gift, label: 'Orders', link: null },
-            { icon: Send, label: 'Telegram', link: 'https://t.me/+jTPKAkv8_DljM2Fl' }
-          ].map((action, idx) => {
-            const Content = () => (
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-sm">
-                  <action.icon className="w-6 h-6 text-white" />
+            { icon: Wallet, label: 'Recharge', action: () => setIsRechargeOpen(true) },
+            { icon: TrendingUp, label: 'Withdraw', action: () => { } },
+            { icon: Users, label: 'Invite', link: '/invite' },
+            { icon: Gift, label: 'Orders', link: '/orders' },
+            { icon: Send, label: 'Support', link: 'https://t.me/+jTPKAkv8_DljM2Fl' }
+          ].map((item, idx) => {
+            const Content = (
+              <div key={idx} className="flex flex-col items-center gap-2.5 group cursor-pointer transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white group-hover:shadow-xl group-hover:shadow-indigo-200 transition-all duration-300">
+                  <item.icon className="w-6 h-6 text-slate-600 group-hover:text-white transition-colors" />
                 </div>
-                <p className="text-xs font-medium text-white">{action.label}</p>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-slate-900">{item.label}</span>
               </div>
             );
 
-            return action.link ? (
-              <a key={idx} href={action.link} target="_blank" rel="noopener noreferrer">{Content()}</a>
-            ) : (
-              <button key={idx}>{Content()}</button>
-            );
+            if (item.link) {
+              if (item.link.startsWith('http')) {
+                return <a href={item.link} key={idx} target="_blank" rel="noopener noreferrer">{Content}</a>;
+              } else {
+                return <Link to={item.link} key={idx}>{Content}</Link>;
+              }
+            }
+            return <button onClick={item.action} key={idx}>{Content}</button>;
           })}
         </div>
-      </header>
+      </div>
 
       {/* Tabs matching screenshot */}
       <div className="mt-6 px-4">
@@ -128,63 +196,74 @@ export default function AsianPaintsLanding() {
         </div>
       </div>
 
-      {/* Plans List - Horizontal Card matching screenshot */}
-      <div className="px-4 mt-6 space-y-4">
+      {/* Plans List - Premium Cards */}
+      <div className="px-6 mt-6 space-y-6">
+        <div className="flex items-center justify-between px-2 mb-2">
+          <h3 className="text-xl font-black text-slate-800 tracking-tight">Investment Plans</h3>
+          <div className="px-3 py-1 bg-indigo-50 rounded-lg border border-indigo-100/50">
+            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Live Now</span>
+          </div>
+        </div>
+
         {getDisplayPlans().map((plan) => (
-          <div key={plan.id} className="bg-white rounded-xl p-3 shadow-lg relative overflow-hidden flex flex-col">
-            {/* Duration Tag - Top Left */}
-            <div className="absolute top-0 left-0">
-              <div className="bg-[#8b31de] text-white text-[10px] font-bold px-3 py-1 rounded-br-lg z-10">
+          <div key={plan.id} className="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-slate-200/50 border border-slate-50 relative overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-indigo-100/50 transition-all duration-500">
+            {/* Duration Tag */}
+            <div className="absolute top-6 right-6 z-10">
+              <div className="bg-indigo-600/10 backdrop-blur-md text-indigo-600 text-[10px] font-black px-4 py-1.5 rounded-full border border-indigo-200">
                 {plan.duration}
               </div>
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex flex-col md:flex-row gap-6">
               {/* Left: Image Area */}
-              <div className="w-[45%] flex-shrink-0">
-                <div className="aspect-[4/3] bg-gray-100 rounded-lg relative overflow-hidden flex items-center justify-center">
+              <div className="w-full md:w-[40%] flex-shrink-0">
+                <div className="aspect-[4/3] bg-slate-50 rounded-[2rem] relative overflow-hidden flex items-center justify-center border border-slate-100 group-hover:scale-[1.02] transition-transform duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <img
                     src={plan.image}
                     alt={plan.name}
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-full h-full object-contain p-4"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://via.placeholder.com/150?text=No+Image"; // Fallback
+                      e.target.src = "https://via.placeholder.com/150?text=Asian+Paints";
                     }}
                   />
                 </div>
               </div>
 
               {/* Right: Content Area */}
-              <div className="w-[55%] flex flex-col justify-between">
+              <div className="w-full md:w-[60%] flex flex-col justify-between pt-2">
                 <div>
-                  <h3 className="text-sm font-bold text-[#003049] mb-3">{plan.name}</h3>
+                  <h3 className="text-xl font-black text-slate-900 mb-4 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{plan.name}</h3>
 
-                  <div className="space-y-1">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-gray-500">Each Price</span>
-                      <span className="font-bold text-gray-900">₹ {plan.eachPrice.toFixed(2)}</span>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Entry Price</p>
+                      <p className="text-lg font-black text-slate-900 tracking-tighter">₹{plan.eachPrice.toLocaleString()}</p>
                     </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-gray-500">Daily Earnings</span>
-                      <span className="font-bold text-gray-900">₹ {plan.dailyEarnings.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-gray-500">Total Gain</span>
-                      <span className="font-bold text-gray-900">₹ {plan.totalGain.toFixed(2)}</span>
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Daily ROI</p>
+                      <p className="text-lg font-black text-emerald-500 tracking-tighter">₹{plan.dailyEarnings.toLocaleString()}</p>
                     </div>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    setSelectedPlan(plan);
-                    setIsConfirmationOpen(true);
-                  }}
-                  className="w-full bg-[#8b31de] text-white text-sm font-bold py-2.5 rounded-lg mt-3 shadow-md active:scale-95 transition-transform"
-                >
-                  Buy Now
-                </button>
+                <div className="flex items-center justify-between gap-4 mt-auto">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Gain</span>
+                    <span className="text-xl font-black text-indigo-600 tracking-tighter">₹{plan.totalGain.toLocaleString()}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedPlan(plan);
+                      setIsConfirmationOpen(true);
+                    }}
+                    className="bg-slate-900 text-white text-sm font-black px-8 py-4 rounded-[1.5rem] shadow-xl active:scale-95 transition-all flex items-center gap-2 hover:bg-black"
+                  >
+                    Invest Now
+                    <TrendingUp className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -195,10 +274,7 @@ export default function AsianPaintsLanding() {
         open={isConfirmationOpen}
         plan={selectedPlan}
         onClose={() => setIsConfirmationOpen(false)}
-        onConfirm={() => {
-          setIsConfirmationOpen(false);
-          setIsRechargeOpen(true);
-        }}
+        onConfirm={handleConfirmPurchase}
       />
 
       <RechargeModal
