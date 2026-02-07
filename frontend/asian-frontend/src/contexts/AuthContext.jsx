@@ -66,6 +66,26 @@ export function AuthProvider({ children }) {
     }
   }
 
+  const refreshUser = async () => {
+    try {
+      const res = await fetch(`${API}/api/auth/v1/me`, {
+        method: 'GET',
+        credentials: 'include',
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      if (data.success && data.user) {
+        setUser((prev) => ({
+          ...prev,
+          ...data.user,
+          username: data.user.email // Ensure consistency
+        }))
+      }
+    } catch (err) {
+      console.error('Refresh user error', err)
+    }
+  }
+
   const logout = async () => {
     try {
       await fetch(`${API}/api/auth/v1/logout`, { method: 'POST', credentials: 'include' })
@@ -77,7 +97,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, login, logout, register, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )
