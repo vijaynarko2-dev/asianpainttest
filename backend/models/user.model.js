@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    totalInvested: {
+        type: Number,
+        default: 0
+    },
+    totalEarnings: {
+        type: Number,
+        default: 0
+    },
     role: {
         type: String,
         enum: ["user", "admin"],

@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
-import Home from './pages/Home.jsx'
-import Login from './pages/Login.jsx'
-import Dashboard from './pages/Dashboard.jsx'
-import AdminDashboard from './pages/AdminDashboard.jsx'
-import ProtectedRoute from './components/ProtectedRoute.jsx'
+import Home from './Pages/Home.jsx'
+import Login from './Pages/Login.jsx'
+import Dashboard from './Pages/Dashboard.jsx'
+import Invite from './Pages/Invite.jsx'
+import Orders from './Pages/Orders.jsx'
+import Profile from './Pages/Profile.jsx'
+import AdminDashboard from './Pages/AdminDashboard.jsx'
+import ProtectedRoute from './Components/ProtectedRoute.jsx'
 import './App.css'
 
 function App() {
@@ -19,6 +22,21 @@ function App() {
         <Route path="/home" element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/invite" element={
+          <ProtectedRoute>
+            <Invite />
+          </ProtectedRoute>
+        } />
+        <Route path="/orders" element={
+          <ProtectedRoute>
+            <Orders />
           </ProtectedRoute>
         } />
         <Route path="/dashboard" element={

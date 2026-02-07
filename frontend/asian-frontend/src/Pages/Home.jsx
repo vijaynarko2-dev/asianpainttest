@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Wallet, TrendingUp, Shield, Users, Gift, Send, ArrowRight, CheckCircle } from 'lucide-react';
+import { Wallet, TrendingUp, Shield, Users, User, Gift, Send, ArrowRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import RechargeModal from '../components/RechargeModal';
-import AnnouncementPopup from '../components/AnnouncementPopup';
+import RechargeModal from '../Components/RechargeModal';
+import AnnouncementPopup from '../Components/AnnouncementPopup';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function AsianPaintsLanding() {
@@ -55,15 +55,15 @@ export default function AsianPaintsLanding() {
         <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-black/10 rounded-full blur-3xl"></div>
 
         <header className="flex items-center justify-between mb-8 relative z-10 px-2">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-inner">
-              <span className="text-xl font-extrabold text-white tracking-tighter">ap</span>
+          <Link to="/profile" className="flex items-center gap-3 active:scale-95 transition-transform">
+            <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-inner text-white group-hover:bg-white/20 transition-all">
+              <User className="w-6 h-6" />
             </div>
             <div>
               <p className="text-white/70 text-xs font-bold uppercase tracking-wider leading-tight">{user?.name || 'Investor'}</p>
               <h2 className="text-white font-black text-lg leading-tight tracking-tight">{user?.phone || 'Account Active'}</h2>
             </div>
-          </div>
+          </Link>
           <button
             onClick={logout}
             className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white active:scale-95 transition-transform border border-white/20 hover:bg-red-500/20"
