@@ -9,7 +9,7 @@ const copyToClipboard = (text) => {
     alert("Copied to clipboard!");
 };
 
-const RechargeModal = ({ isOpen, onClose, initialAmount }) => {
+const RechargeModal = ({ isOpen, onClose, initialAmount, planDetails }) => {
     const [amount, setAmount] = useState(initialAmount || 750);
     const [step, setStep] = useState(1); // 1: Amount, 2: Payment (QR + UTR)
     const [qrData, setQrData] = useState(null);
@@ -18,22 +18,27 @@ const RechargeModal = ({ isOpen, onClose, initialAmount }) => {
     const { user } = useAuth();
 
     useEffect(() => {
-        if (initialAmount) setAmount(initialAmount);
-    }, [initialAmount]);
+        if (planDetails) {
+            setAmount(planDetails.investmentAmount);
+            setStep(2);
+        } else if (initialAmount) {
+            setAmount(initialAmount);
+        }
+    }, [initialAmount, planDetails, isOpen]);
 
     useEffect(() => {
         if (!isOpen) {
-            setStep(1);
+            setStep(planDetails ? 2 : 1);
             setUtr("");
         }
-    }, [isOpen]);
+    }, [isOpen, planDetails]);
 
     // Fetch QR Code when step 2 opens
     useEffect(() => {
-        if (step === 2 && !qrData) {
+        if (step === 2 && !qrData && isOpen) {
             fetchQrCode();
         }
-    }, [step]);
+    }, [step, isOpen]);
 
     const fetchQrCode = async () => {
         try {
@@ -53,6 +58,7 @@ const RechargeModal = ({ isOpen, onClose, initialAmount }) => {
             await axios.post("http://localhost:3000/api/payment/v1/submit", {
                 amount,
                 utr,
+                planDetails: planDetails || null
             }, { withCredentials: true });
 
             alert("Payment Submitted! Verification Pending.");
