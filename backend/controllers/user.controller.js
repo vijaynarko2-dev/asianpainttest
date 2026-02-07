@@ -68,6 +68,17 @@ exports.login = async (req, res, next) => {
         return next(error);
     }
 }
+exports.getMe = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id);
+        res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        return next(error);
+    }
+}
 exports.logout = async (req, res, next) => {
     try {
         res.status(200).cookie('token', null, {

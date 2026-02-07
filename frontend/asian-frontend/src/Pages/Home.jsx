@@ -6,7 +6,7 @@ import AnnouncementPopup from '../components/AnnouncementPopup';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function AsianPaintsLanding() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [activeTab, setActiveTab] = useState('normal');
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -15,6 +15,7 @@ export default function AsianPaintsLanding() {
 
   useEffect(() => {
     setShowAnnouncement(true);
+    if (user) refreshUser();
   }, []);
 
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -78,7 +79,7 @@ export default function AsianPaintsLanding() {
                 <Users className="w-3 h-3 text-purple-600" />
               </div>
             </div>
-            <p className="text-xl font-bold">₹0.00</p>
+            <p className="text-xl font-bold">₹{user?.balance || 0}</p>
           </div>
         </div>
 
