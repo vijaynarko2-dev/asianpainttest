@@ -149,7 +149,24 @@ const RechargeModal = ({ isOpen, onClose, initialAmount }) => {
                                     </div>
                                 )}
 
-                                <p className="mt-3 text-lg font-bold text-gray-800">₹ {amount}</p>
+                                <div className="mt-4 flex flex-col items-center">
+                                    <p className="text-lg font-bold text-[#8b31de] mb-1">₹ {amount}</p>
+
+                                    {qrData?.upiId && (
+                                        <div className="flex flex-col items-center gap-2 mt-2">
+                                            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-purple-100">
+                                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">UPI ID:</span>
+                                                <span className="text-sm font-bold text-gray-800">{qrData.upiId}</span>
+                                            </div>
+                                            <button
+                                                onClick={() => copyToClipboard(qrData.upiId)}
+                                                className="text-[10px] uppercase font-bold text-[#8b31de] bg-purple-50 px-3 py-1 rounded-full hover:bg-purple-100 transition-colors"
+                                            >
+                                                Copy UPI ID
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* UTR Input */}
