@@ -110,7 +110,7 @@ export default function AsianPaintsLanding() {
             { icon: TrendingUp, label: 'Withdraw', action: () => { } },
             { icon: Users, label: 'Invite', link: '/invite' },
             { icon: Gift, label: 'Orders', link: '/orders' },
-            { icon: Send, label: 'Support', link: 'https://t.me/+jTPKAkv8_DljM2Fl' }
+            { icon: Send, label: 'Support', link: 'https://t.me/begegege' }
           ].map((item, idx) => {
             const Content = (
               <div key={idx} className="flex flex-col items-center gap-2.5 group cursor-pointer transition-all">
