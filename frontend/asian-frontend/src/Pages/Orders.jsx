@@ -2,6 +2,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { Package, Clock, CheckCircle, XCircle, ChevronLeft, TrendingUp, Calendar, ArrowRight } from 'lucide-react';
 
 export default function Orders() {
@@ -18,7 +19,7 @@ export default function Orders() {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:3000/api/orders/my-orders', {
+            const response = await axios.get(`${API_URL}/api/orders/my-orders`, {
                 withCredentials: true
             });
 
@@ -116,8 +117,8 @@ export default function Orders() {
                             key={status}
                             onClick={() => setFilter(status)}
                             className={`flex-1 py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${filter === status
-                                    ? 'bg-indigo-600 text-white shadow-md'
-                                    : 'text-slate-500 hover:bg-slate-50'
+                                ? 'bg-indigo-600 text-white shadow-md'
+                                : 'text-slate-500 hover:bg-slate-50'
                                 }`}
                         >
                             {status}

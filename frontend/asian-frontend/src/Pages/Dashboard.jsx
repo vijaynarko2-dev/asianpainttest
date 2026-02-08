@@ -1,6 +1,7 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { Wallet, TrendingUp, Package, Clock, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
 
 export default function Dashboard() {
@@ -18,12 +19,12 @@ export default function Dashboard() {
       setLoading(true);
 
       // Fetch stats
-      const statsResponse = await axios.get('http://localhost:3000/api/orders/stats', {
+      const statsResponse = await axios.get(`${API_URL}/api/orders/stats`, {
         withCredentials: true
       });
 
       // Fetch orders
-      const ordersResponse = await axios.get('http://localhost:3000/api/orders/my-orders', {
+      const ordersResponse = await axios.get(`${API_URL}/api/orders/my-orders`, {
         withCredentials: true
       });
 

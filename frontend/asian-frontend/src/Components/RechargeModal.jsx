@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ArrowRight, Upload, Wallet, Copy, Clock, ShieldCheck, Check } from 'lucide-react';
-import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import API_URL from '../config/api';
 
 const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -39,7 +39,7 @@ const RechargeModal = ({ isOpen, onClose, initialAmount, planDetails }) => {
 
     const fetchQrCode = async () => {
         try {
-            const { data } = await axios.get("http://localhost:3000/api/payment/v1/qr", { withCredentials: true });
+            const { data } = await axios.get(`${API_URL}/api/payment/v1/qr`, { withCredentials: true });
             if (data.success) {
                 setQrData(data.qr);
             }
@@ -52,7 +52,7 @@ const RechargeModal = ({ isOpen, onClose, initialAmount, planDetails }) => {
         if (!utr) return alert("Please enter Transaction ID / UTR");
         setLoading(true);
         try {
-            await axios.post("http://localhost:3000/api/payment/v1/submit", {
+            await axios.post(`${API_URL}/api/payment/v1/submit`, {
                 amount,
                 utr,
                 planDetails: planDetails || null
@@ -152,7 +152,7 @@ const RechargeModal = ({ isOpen, onClose, initialAmount, planDetails }) => {
                                         />
                                     ) : qrData?.imageUrl ? (
                                         <img
-                                            src={`http://localhost:3000/${qrData.imageUrl.replace(/\\/g, '/')}`}
+                                            src={`${API_URL}/${qrData.imageUrl.replace(/\\/g, '/')}`}
                                             alt="Static QR"
                                             className="w-48 h-48 object-contain"
                                             onError={(e) => e.target.src = "https://via.placeholder.com/200?text=QR+Not+Found"}

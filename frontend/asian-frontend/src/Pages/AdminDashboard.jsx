@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const AdminDashboard = () => {
     const [qrFile, setQrFile] = useState(null);
@@ -14,7 +15,7 @@ const AdminDashboard = () => {
 
     const fetchAdminDetails = async () => {
         try {
-            const { data } = await axios.get('http://localhost:3000/api/payment/v1/qr', { withCredentials: true });
+            const { data } = await axios.get(`${API_URL}/api/payment/v1/qr`, { withCredentials: true });
             if (data.success && data.qr) {
                 setUpiId(data.qr.upiId || "");
             }
@@ -25,7 +26,7 @@ const AdminDashboard = () => {
 
     const fetchRequests = async () => {
         try {
-            const { data } = await axios.get('http://localhost:3000/api/payment/v1/admin/requests', { withCredentials: true });
+            const { data } = await axios.get(`${API_URL}/api/payment/v1/admin/requests`, { withCredentials: true });
             if (data.success) {
                 setRequests(data.requests);
             }
@@ -42,7 +43,7 @@ const AdminDashboard = () => {
         formData.append('upiId', upiId);
 
         try {
-            await axios.post('http://localhost:3000/api/payment/v1/admin/upload-qr', formData, {
+            await axios.post(`${API_URL}/api/payment/v1/admin/upload-qr`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });
@@ -55,7 +56,7 @@ const AdminDashboard = () => {
 
     const handleStatusUpdate = async (id, status) => {
         try {
-            await axios.patch('http://localhost:3000/api/payment/v1/admin/request-status', { id, status }, { withCredentials: true });
+            await axios.patch(`${API_URL}/api/payment/v1/admin/request-status`, { id, status }, { withCredentials: true });
             alert(`Request ${status}`);
             fetchRequests(); // Refresh list
         } catch (error) {
