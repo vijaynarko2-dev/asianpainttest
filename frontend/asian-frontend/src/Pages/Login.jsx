@@ -172,19 +172,19 @@ export default function Login() {
           {activeTab === 'login' && (
             <div className="p-6 pt-0">
               <div className="space-y-4">
-                {/* Email */}
+                {/* Email or Phone */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Email or Phone Number
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
-                      type="email"
+                      type="text"
                       name="email"
                       value={loginData.email}
                       onChange={handleLoginChange}
-                      placeholder="Enter your email"
+                      placeholder="Enter email or phone number"
                       className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
                     />
                   </div>
