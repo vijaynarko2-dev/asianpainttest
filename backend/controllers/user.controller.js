@@ -97,3 +97,27 @@ exports.logout = async (req, res, next) => {
         return next(error);
     }
 }
+
+exports.updateProfile = async (req, res, next) => {
+    try {
+        const { name, phone } = req.body;
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        if (name) user.name = name;
+        if (phone) user.phone = phone;
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            user
+        });
+    } catch (error) {
+        return next(error);
+    }
+}

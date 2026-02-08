@@ -86,6 +86,32 @@ export function AuthProvider({ children }) {
     }
   }
 
+  const updateProfile = async ({ name, phone }) => {
+    try {
+      const res = await fetch(`${API}/api/auth/v1/update`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone }),
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to update profile')
+      }
+      if (data.success) {
+        setUser((prev) => ({
+          ...prev,
+          ...data.user,
+          username: data.user.email
+        }))
+      }
+      return data
+    } catch (err) {
+      console.error('Update profile error', err)
+      throw err
+    }
+  }
+
   const logout = async () => {
     try {
       await fetch(`${API}/api/auth/v1/logout`, { method: 'POST', credentials: 'include' })
@@ -97,7 +123,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, refreshUser }}>
+    <AuthContext.Provider value={{ user, login, logout, register, refreshUser, updateProfile }}>
       {children}
     </AuthContext.Provider>
   )

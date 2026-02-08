@@ -9,6 +9,7 @@ const cors = require("cors");
 const router = require("./routes/router");
 const cookieParser = require('cookie-parser');
 const paymentrouter = require("./routes/paymentrouter");
+const orderrouter = require("./routes/orderrouter");
 
 // dotenv.config({ path: "./config/config.env" });
 const connectdb = require("./db/conn")
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth/v1", router);
 app.use("/api/payment/v1", paymentrouter);
+app.use("/api/orders", orderrouter);
 app.use("/uploads", express.static("uploads"));
 
 connectdb()
