@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ArrowRight, Upload, Wallet, Copy, Clock, ShieldCheck, Check } from 'lucide-react';
+import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
 import API_URL from '../config/api';
 
