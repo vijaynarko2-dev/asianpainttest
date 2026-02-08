@@ -42,7 +42,15 @@ exports.login = async (req, res, next) => {
         if (!email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
-        let user = await User.findOne({ email }).select('+password');
+
+        // Find user by email or phone
+        let user = await User.findOne({
+            $or: [
+                { email: email },
+                { phone: !isNaN(email) ? Number(email) : undefined }
+            ]
+        }).select('+password');
+
         if (!user) {
             return res.status(400).json({ message: 'User does not exist' });
         }
