@@ -42,12 +42,10 @@ exports.uploadQr = async (req, res) => {
 
 // Public: Get QR Code
 exports.getQr = async (req, res) => {
+    console.log(`Available QR Controller hit. Query: ${JSON.stringify(req.query)}`);
     try {
         const adminQr = await AdminQr.findOne();
-        if (!adminQr) {
-            return res.status(404).json({ success: false, message: "No QR Code available" });
-        }
-        res.status(200).json({ success: true, qr: adminQr });
+        res.status(200).json({ success: true, qr: adminQr || null });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

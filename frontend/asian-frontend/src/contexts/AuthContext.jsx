@@ -19,7 +19,8 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem('user')
   }, [user])
 
-  const API = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+  const base = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+  const API = base.endsWith('/') ? base.slice(0, -1) : base
 
   const login = async ({ username, password }) => {
     try {

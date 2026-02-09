@@ -29,6 +29,13 @@ app.use(cookieParser());
 app.use("/api/auth/v1", router);
 app.use("/api/payment/v1", paymentrouter);
 app.use("/api/orders", orderrouter);
+
+// Debug: Log 404s for API routes
+app.use('/api', (req, res) => {
+    console.log(`404 - Not Found: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found on server` });
+});
+
 app.use("/uploads", express.static("uploads"));
 
 connectdb()
