@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
       return null
     }
   })
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -21,6 +22,35 @@ export function AuthProvider({ children }) {
 
   const base = import.meta.env.VITE_API_URL || 'http://localhost:3000'
   const API = base.endsWith('/') ? base.slice(0, -1) : base
+
+  // Check session on mount - this is critical for deployed environments
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const res = await fetch(`${API}/api/auth/v1/me`, {
+          method: 'GET',
+          credentials: 'include',
+        })
+        if (res.ok) {
+          const data = await res.json()
+          if (data.success && data.user) {
+            setUser({
+              _id: data.user._id,
+              username: data.user.email,
+              name: data.user.name,
+              role: data.user.role
+            })
+          }
+        }
+      } catch (err) {
+        console.error('Session check error', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    initAuth()
+  }, [API])
+
 
   const login = async ({ username, password }) => {
     try {
@@ -124,7 +154,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, refreshUser, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register, refreshUser, updateProfile }}>
       {children}
     </AuthContext.Provider>
   )

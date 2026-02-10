@@ -10,7 +10,8 @@ const promoteUsers = async () => {
         await mongoose.connect(process.env.MONGO_URL);
         console.log('Connected to MongoDB');
 
-        const emails = ['ashianpaint@gmail.com', 'vinayak@gmail.com', 'Vijaynarko2@gmail.com'];
+        const args = process.argv.slice(2);
+        const emails = args.length > 0 ? args : ['ashianpaint@gmail.com', 'vinayak@gmail.com', 'Vijaynarko2@gmail.com'];
         // Find existing users first to show who was found
         const existing = await User.find({ email: { $in: emails } });
         console.log(`Found ${existing.length} matching users to promote.`);
