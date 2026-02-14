@@ -22,21 +22,21 @@ export default function AsianPaintsLanding() {
 
   // Placeholder data
   const normalPlans = [
-    { id: 1, name: 'Asian Paints Apex', eachPrice: 750, dailyEarnings: 155, totalGain: 8935, duration: '58 Days', gradient: 'from-purple-500 to-indigo-500', hot: true, badge: 'Popular', image: '/assets/product1.png' },
-    { id: 2, name: 'Asian Paints Royale', eachPrice: 2300, dailyEarnings: 550, totalGain: 31900, duration: '58 Days', gradient: 'from-pink-500 to-rose-500', hot: true, badge: 'Best Seller', image: '/assets/product2.png' },
-    { id: 3, name: 'Asian Paint Ultima', eachPrice: 5300, dailyEarnings: 1350, totalGain: 78300, duration: '58 Days', gradient: 'from-amber-500 to-orange-500', image: '/assets/product3.png' },
-    { id: 4, name: 'Asian Paint Smart', eachPrice: 13500, dailyEarnings: 3600, totalGain: 208800, duration: '58 Days', gradient: 'from-blue-500 to-cyan-500', image: '/assets/product4.png' },
-    { id: 5, name: 'Asian Paint Advance', eachPrice: 28000, dailyEarnings: 7800, totalGain: 452400, duration: '58 Days', gradient: 'from-emerald-500 to-teal-500', image: '/assets/product1.png' },
+    { id: 1, name: 'Asian Paints Apex', eachPrice: 849, dailyEarnings: 3568, totalGain: 7136, duration: '2 Days', gradient: 'from-purple-500 to-indigo-500', hot: true, badge: 'Popular', image: '/assets/product1.png' },
+    { id: 2, name: 'Asian Paints Royale', eachPrice: 296, dailyEarnings: 259, totalGain: 11655, duration: '45 Days', gradient: 'from-pink-500 to-rose-500', hot: true, badge: 'Best Seller', image: '/assets/product2.png' },
+    { id: 3, name: 'Asian Paint Ultima', eachPrice: 530, dailyEarnings: 624, totalGain: 18720, duration: '30 Days', gradient: 'from-amber-500 to-orange-500', image: '/assets/product3.png' },
+    { id: 4, name: 'Asian Paint Smart', eachPrice: 1065, dailyEarnings: 1255, totalGain: 37650, duration: '30 Days', gradient: 'from-blue-500 to-cyan-500', image: '/assets/product4.png' },
+    { id: 5, name: 'Asian Paint Advance', eachPrice: 500, dailyEarnings: 800, totalGain: 24000, duration: '30 Days', gradient: 'from-emerald-500 to-teal-500', image: '/assets/product1.png' },
     { id: 6, name: 'Asian Paint Pro', eachPrice: 58000, dailyEarnings: 17000, totalGain: 986000, duration: '58 Days', gradient: 'from-violet-500 to-purple-500', image: '/assets/product2.png' },
   ];
 
   const welfarePlans = [
-    { id: 101, name: 'Product 1', eachPrice: 400, dailyEarnings: 200, totalGain: 800, duration: '58 Days', gradient: 'from-lime-500 to-green-500', image: '/assets/product3.png' },
-    { id: 102, name: 'Product 2', eachPrice: 1800, dailyEarnings: 800, totalGain: 3200, duration: '58 Days', gradient: 'from-cyan-500 to-blue-500', image: '/assets/product4.png' },
+    { id: 101, name: 'Product 1', eachPrice: 520, dailyEarnings: 620, totalGain: 18600, duration: '30 Days', gradient: 'from-lime-500 to-green-500', image: '/assets/product3.png' },
+    { id: 102, name: 'Product 2', eachPrice: 400, dailyEarnings: 800, totalGain: 24000, duration: '30 Days', gradient: 'from-cyan-500 to-blue-500', image: '/assets/product4.png' },
   ];
 
   const offerPlans = [
-    { id: 201, name: 'Activity Plan 1', eachPrice: 1500, dailyEarnings: 888, totalGain: 3000, duration: '20 Days', gradient: 'from-red-500 to-pink-500', image: '/assets/product1.png' },
+    { id: 201, name: 'Activity Plan 1', eachPrice: 500, dailyEarnings: 1000, totalGain: 10000, duration: '10 Days', gradient: 'from-red-500 to-pink-500', image: '/assets/product1.png' },
   ];
 
   const getDisplayPlans = () => {
