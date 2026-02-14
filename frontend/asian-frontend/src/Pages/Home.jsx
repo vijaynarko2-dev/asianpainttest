@@ -95,7 +95,7 @@ export default function AsianPaintsLanding() {
               <p className="text-2xl font-black tracking-tight">₹0.00</p>
             </div>
             <div className="text-right">
-              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1.5">Expected ROI</p>
+              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1.5">Daily Earnings</p>
               <p className="text-2xl font-black text-emerald-300 tracking-tight">+₹0.00</p>
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function AsianPaintsLanding() {
                       <p className="text-lg font-black text-slate-900 tracking-tighter">₹{plan.eachPrice.toLocaleString()}</p>
                     </div>
                     <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Daily ROI</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Daily Earning</p>
                       <p className="text-lg font-black text-emerald-500 tracking-tighter">₹{plan.dailyEarnings.toLocaleString()}</p>
                     </div>
                   </div>
